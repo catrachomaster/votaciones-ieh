@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Candidatos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f0f4f8;
+            text-align: center;
+        }
+        h2 {
+            color: #1e3a8a;
+        }
+        form {
+            background-color: white;
+            width: 60%;
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        input, textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .candidato {
+            width: 200px;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .candidato img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Candidatos para "{{ titulo }}"</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="text" name="nombre" placeholder="Nombre del candidato" required>
+        <input type="text" name="cargo" placeholder="Cargo al que aspira" required>
+        <textarea name="descripcion" placeholder="Descripción breve"></textarea>
+        <input type="file" name="foto" accept=".jpg, .png, .jpeg" required>
+        <button type="submit">Agregar candidato</button>
+        <label for="tipo">Tipo de candidato:</label>
+        <select id="tipo" name="tipo" required>
+        <option value="clerigo">Clérigo</option>
+        <option value="laico">Laico</option>
+        </select>
+    </form>
+
+    <div class="grid">
+        {% for c in candidatos %}
+        <div class="candidato">
+            <img src="{{ url_for('uploaded_file', filename=c.foto) }}" alt="Foto de {{ c.nombre }}">
+            <h4>{{ c.nombre }}</h4>
+            <p><strong>{{ c.cargo }}</strong></p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

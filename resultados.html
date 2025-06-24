@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados de la Votación</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: auto;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Resultados de la Votación</h2>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Cargo</th>
+            <th>Votos</th>
+        </tr>
+        {% for r in resultados %}
+        <tr>
+            <td>{{ r.nombre }}</td>
+            <td>{{ r.cargo }}</td>
+            <td>{{ r.votos }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
