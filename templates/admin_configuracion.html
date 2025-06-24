@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta charset="UTF-8">
+    <title>Configuración de Votaciones</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        form.nueva-votacion {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 3px solid #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-azul {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-azul:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-verde {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-verde:hover {
+            background-color: #15803d;
+        }
+
+        .btn-rojo {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-rojo:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-gris {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .btn-gris:hover {
+            background-color: #4b5563;
+        }
+
+        .votacion-box {
+            background-color: white;
+            border: 3px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .acciones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .registro-votante {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .mantenimiento {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 3px solid #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-top: 40px;
+        }
+
+        hr {
+            margin: 50px 0;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>Configuración de Votaciones</h2>
+</header>
+
+<main>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="margin-bottom: 20px;">
+      {% for category, message in messages %}
+        <div style="padding: 10px; background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; border-radius: 8px; margin-bottom: 10px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+    <!-- Crear nueva votación -->
+    <form method="POST" action="{{ url_for('admin_configuracion') }}" class="nueva-votacion">
+        <input type="hidden" name="crear">
+        <label for="titulo">Título de la nueva votación:</label>
+        <input type="text" id="titulo" name="titulo" required>
+
+        <label for="max_clerigos">Cantidad de votos permitidos para clérigos:</label>
+        <input type="number" id="max_clerigos" name="max_clerigos" min="1" required>
+
+        <label for="max_laicos">Cantidad de votos permitidos para laicos:</label>
+        <input type="number" id="max_laicos" name="max_laicos" min="1" required>
+
+        <label for="descripcion">Descripción de la votación:</label>
+        <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+
+        <button type="submit" class="btn-azul">Crear Nueva Votación</button>
+    </form>
+
+    <!-- Mostrar todas las votaciones existentes -->
+    {% for v in votaciones %}
+    <div class="votacion-box">
+        <h3>{{ v.titulo }}</h3>
+        <p><strong>Descripción:</strong> {{ v.descripcion }}</p>
+        <p><strong>Clérigos:</strong> {{ v.max_clerigos }} votos permitidos</p>
+        <p><strong>Laicos:</strong> {{ v.max_laicos }} votos permitidos</p>
+        <p><strong>Estado:</strong> {{ 'Activa' if v.activa else 'Inactiva' }}</p>
+
+        <div class="acciones">
+            <!-- Candidatos -->
+            <a href="{{ url_for('admin_candidatos', votacion_id=v.id) }}">
+                <button type="button" class="btn-azul">👤 Candidatos</button>
+            </a>
+
+            <!-- Editar límites -->
+            <button type="button" class="btn-azul" onclick="toggleEditar({{ v.id }})">✏ Editar límites</button>
+
+            <!-- Activar -->
+            <form method="POST" action="{{ url_for('admin_configuracion') }}">
+                <input type="hidden" name="votacion_id" value="{{ v.id }}">
+                <input type="hidden" name="accion" value="activar">
+                <button type="submit" class="btn-verde">✔ Activar</button>
+            </form>
+
+            <!-- Desactivar -->
+            <form method="POST" action="{{ url_for('admin_configuracion') }}">
+                <input type="hidden" name="votacion_id" value="{{ v.id }}">
+                <input type="hidden" name="accion" value="desactivar">
+                <button type="submit" class="btn-gris">✖ Desactivar</button>
+            </form>
+
+            <!-- Eliminar -->
+            <form method="POST" action="{{ url_for('admin_configuracion') }}" onsubmit="return confirm('¿Estás seguro de eliminar esta votación?');">
+                <input type="hidden" name="votacion_id" value="{{ v.id }}">
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="btn-rojo">🗑 Eliminar</button>
+            </form>
+        </div>
+
+        <!-- Formulario de edición -->
+        <div id="editar-{{ v.id }}" style="display: none; margin-top: 15px;">
+            <form method="POST" action="{{ url_for('admin_configuracion') }}" onsubmit="return confirm('¿Deseas actualizar los límites de votos?');">
+                <input type="hidden" name="votacion_id" value="{{ v.id }}">
+                <input type="hidden" name="accion" value="editar_limites">
+
+                <label for="editar_max_clerigos_{{ v.id }}">Clérigos (máximo):</label>
+                <input type="number" id="editar_max_clerigos_{{ v.id }}" name="max_clerigos" min="0" value="{{ v.max_clerigos }}" required>
+
+                <label for="editar_max_laicos_{{ v.id }}">Laicos (máximo):</label>
+                <input type="number" id="editar_max_laicos_{{ v.id }}" name="max_laicos" min="0" value="{{ v.max_laicos }}" required>
+
+                <button type="submit" class="btn-verde" style="margin-top: 10px;">💾 Guardar cambios</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Registrar nuevo votante -->
+    <div class="registro-votante">
+        <a href="{{ url_for('registrar_usuario') }}">
+            <button class="btn-azul" style="font-size: 15px;">➕ Registrar nuevo votante</button>
+        </a>
+    </div>
+
+    <hr>
+
+    <!-- Mantenimiento del sistema -->
+    <div class="mantenimiento">
+        <h3 style="text-align: center; color: #dc2626;">Mantenimiento del sistema</h3>
+
+        <form method="POST" action="{{ url_for('reset_votos') }}" onsubmit="return confirm('¿Estás seguro que deseas borrar todos los votos?');">
+            <button type="submit" class="btn-rojo" style="width: 100%; margin-bottom: 10px;">🧹 Borrar todos los votos</button>
+        </form>
+
+        <form method="POST" action="{{ url_for('reset_usuarios') }}" onsubmit="return confirm('¿Borrar todos los votantes? El administrador no será eliminado.');">
+            <button type="submit" class="btn-gris" style="width: 100%;">👥 Borrar todos los votantes</button>
+        </form>
+    </div>
+
+</main>
+
+<script>
+     // Esta línea puede marcar error en VSCode pero es válida en Flask
+    function toggleEditar(id) {
+        const div = document.getElementById('editar-' + id);
+        div.style.display = div.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+
+</body>
+</html>
