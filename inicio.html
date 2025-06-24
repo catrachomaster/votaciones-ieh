@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votaciones IEH 2026</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #eef2ff, #c7d2fe);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .contenedor-principal {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        img {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #2563eb;
+            font-size: 20px;
+        }
+
+        input {
+            display: block;
+            width: 90%;
+            margin: 10px auto;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            width: 90%;
+            margin: 10px auto;
+            padding: 12px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+
+        .error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            padding: 20px 10px;
+        }
+
+        @media (max-width: 600px) {
+            .contenedor-principal {
+                padding: 40px 10px;
+            }
+
+            .card {
+                width: 100% !important;
+                max-width: none;
+                padding: 25px !important;
+                box-shadow: none;
+                transform: scale(1.1);
+            }
+
+            img {
+                width: 65px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            input[type="text"],
+            input[type="password"],
+            button {
+                width: 90% !important;
+                font-size: 1rem;
+                padding: 14px;
+            }
+
+            footer {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor-principal">
+    <div class="card">
+        <img src="{{ url_for('static', filename='logo_ieh.png') }}" alt="Logo IEH">
+        <h1>Votaciones IEH 2026</h1>
+        <h2>Inicio de sesión</h2>
+
+        {% if error == 'usuario_no_encontrado' %}
+            <div class="error">❌ Usuario o contraseña incorrecta.</div>
+        {% elif error == 'ya_voto' %}
+            <div class="error">✅ Ya has votado. Gracias por participar.</div>
+        {% endif %}
+
+        <form method="POST">
+            <input type="text" name="nombre" placeholder="Nombre de usuario" required>
+            <input type="password" name="contrasena" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+        </form>
+    </div>
+</div>
+
+<footer>
+    Iglesia Episcopal Hondureña - Todos los derechos reservados
+</footer>
+
+</body>
+</html>

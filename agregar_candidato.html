@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Candidato</title>
+</head>
+<body>
+    <h2>Agregar Candidato</h2>
+    <form action="/agregar_candidato" method="POST" enctype="multipart/form-data">
+        <label>Nombre:</label><br>
+        <input type="text" name="nombre" required><br><br>
+
+        <label>Cargo:</label><br>
+        <input type="text" name="cargo" required><br><br>
+
+        <label>Descripción:</label><br>
+        <textarea name="descripcion" rows="4" cols="40"></textarea><br><br>
+
+        <label>Foto:</label><br>
+        <input type="file" name="foto" accept=".png, .jpg, .jpeg" required><br><br>
+
+        <input type="submit" value="Guardar Candidato">
+    </form>
+</body>
+</html>
